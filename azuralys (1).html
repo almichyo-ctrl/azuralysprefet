@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Azuralys — Poste de garde</title>
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0d1626;
+    --navy:#132038;
+    --navy-elevated:#182a47;
+    --azure:#3f6fa6;
+    --azure-soft:#7ea3cc;
+    --azure-dim:#294a6b;
+    --gold:#c7a765;
+    --gold-dim:#8f7c50;
+    --ink:#e9eef8;
+    --ink-muted:#9fb1cc;
+    --ink-faint:#6c7d99;
+    --line:rgba(233,238,248,0.10);
+    --line-strong:rgba(233,238,248,0.18);
+    --danger:#c1614a;
+    --danger-bg:rgba(193,97,74,0.14);
+    --warn:#c9a24b;
+    --warn-bg:rgba(201,162,75,0.14);
+    --ok:#6a9a76;
+    --ok-bg:rgba(106,154,118,0.14);
+    --font-display:'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+    --font-body:'Karla', -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--navy-deep);
+    color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  ::selection{background:var(--azure);color:var(--navy-deep);}
+
+  a{color:var(--azure-soft);}
+
+  button{font-family:inherit;cursor:pointer;}
+
+  /* ---------- layout shell ---------- */
+  .shell{
+    display:flex;
+    min-height:100vh;
+  }
+
+  .rail{
+    width:236px;
+    flex-shrink:0;
+    background:linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    padding:28px 18px;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 6px 24px;
+    margin-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand svg{flex-shrink:0;width:30px;height:36px;}
+  .brand-text h1{
+    font-family:var(--font-display);
+    font-size:1.5rem;
+    font-weight:600;
+    letter-spacing:0.01em;
+    margin:0;
+    line-height:1.05;
+    color:var(--ink);
+  }
+  .brand-text p{
+    margin:2px 0 0;
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    letter-spacing:0.04em;
+  }
+
+  nav.tabs{display:flex;flex-direction:column;gap:4px;}
+  .tab-btn{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 12px;
+    border-radius:7px;
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--ink-muted);
+    font-size:0.92rem;
+    font-weight:500;
+    text-align:left;
+    transition:background .15s ease, color .15s ease;
+  }
+  .tab-btn svg{width:18px;height:18px;flex-shrink:0;opacity:0.85;}
+  .tab-btn .count{
+    margin-left:auto;
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    background:var(--navy-elevated);
+    border-radius:10px;
+    padding:1px 7px;
+    min-width:18px;
+    text-align:center;
+  }
+  .tab-btn:hover{background:var(--navy-elevated);color:var(--ink);}
+  .tab-btn.active{
+    background:rgba(63,111,166,0.16);
+    border-color:rgba(63,111,166,0.35);
+    color:var(--ink);
+  }
+  .tab-btn.active .count{background:var(--azure);color:var(--navy-deep);}
+
+  .rail-foot{
+    margin-top:auto;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    line-height:1.5;
+  }
+  .rail-foot .who{color:var(--azure-soft);font-weight:600;}
+
+  main.stage{
+    flex:1;
+    min-width:0;
+    padding:36px 44px 90px;
+    max-width:880px;
+  }
+
+  .page-head{margin-bottom:26px;}
+  .page-head .eyebrow{
+    font-size:0.75rem;
+    color:var(--ink-faint);
+    margin:0 0 4px;
+  }
+  .page-head h2{
+    font-family:var(--font-display);
+    font-size:2.1rem;
+    font-weight:600;
+    margin:0;
+    color:var(--ink);
+  }
+  .page-head p.lede{
+    margin:8px 0 0;
+    color:var(--ink-muted);
+    font-size:0.92rem;
+    max-width:56ch;
+    line-height:1.5;
+  }
+
+  /* ---------- shared bits ---------- */
+  .empty{
+    border:1px dashed var(--line-strong);
+    border-radius:10px;
+    padding:34px 24px;
+    text-align:center;
+    color:var(--ink-faint);
+    font-size:0.9rem;
+  }
+  .empty strong{display:block;color:var(--ink-muted);font-weight:600;margin-bottom:4px;font-size:0.95rem;}
+
+  .field-label{
+    display:block;
+    font-size:0.76rem;
+    color:var(--ink-faint);
+    margin-bottom:5px;
+    font-weight:600;
+    letter-spacing:0.01em;
+  }
+  input[type=text], input[type=url], textarea, select{
+    width:100%;
+    background:var(--navy);
+    border:1px solid var(--line-strong);
+    color:var(--ink);
+    border-radius:7px;
+    padding:9px 11px;
+    font-family:inherit;
+    font-size:0.9rem;
+    resize:vertical;
+  }
+  input::placeholder, textarea::placeholder{color:var(--ink-faint);}
+  input:focus, textarea:focus, select:focus, button:focus-visible{
+    outline:2px solid var(--azure-soft);
+    outline-offset:1px;
+    border-color:var(--azure-soft);
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:9px 16px;
+    border-radius:7px;
+    border:1px solid var(--azure);
+    background:var(--azure);
+    color:#fff;
+    font-size:0.86rem;
+    font-weight:600;
+  }
+  .btn:hover{background:#4a7cb4;}
+  .btn.ghost{
+    background:transparent;
+    color:var(--ink-muted);
+    border-color:var(--line-strong);
+  }
+  .btn.ghost:hover{color:var(--ink);border-color:var(--azure-soft);}
+  .btn.danger{border-color:var(--danger);background:transparent;color:var(--danger);}
+  .btn.danger:hover{background:var(--danger-bg);}
+  .btn.small{padding:5px 10px;font-size:0.78rem;}
+
+  .composer{
+    background:var(--navy);
+    border:1px solid var(--line);
+    border-radius:11px;
+    padding:18px;
+    margin-bottom:26px;
+  }
+  .composer .row{display:flex;gap:10px;margin-bottom:10px;}
+  .composer .row:last-child{margin-bottom:0;}
+  .composer .row > div{flex:1;}
+
+  .list{display:flex;flex-direction:column;}
+  .row-item{
+    padding:16px 4px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+  }
+  .row-item:first-child{padding-top:4px;}
+  .row-item:last-child{border-bottom:none;}
+
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    font-size:0.7rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    padding:2px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .tag.sev-grave{background:var(--danger-bg);color:#e08d78;}
+  .tag.sev-modere{background:var(--warn-bg);color:var(--warn);}
+  .tag.sev-faible{background:var(--ok-bg);color:#8ec099;}
+  .tag.st-ouvert{background:var(--danger-bg);color:#e08d78;}
+  .tag.st-en_cours{background:var(--warn-bg);color:var(--warn);}
+  .tag.st-resolu{background:var(--ok-bg);color:#8ec099;}
+  .tag.pinned{background:rgba(199,167,101,0.16);color:var(--gold);}
+
+  .meta-line{font-size:0.76rem;color:var(--ink-faint);margin-top:3px;}
+  .meta-line b{color:var(--ink-muted);font-weight:600;}
+
+  .item-title{font-weight:600;font-size:0.97rem;color:var(--ink);margin:0 0 3px;}
+  .item-body{font-size:0.88rem;color:var(--ink-muted);line-height:1.5;white-space:pre-wrap;}
+
+  select.status-select{
+    width:auto;
+    padding:5px 8px;
+    font-size:0.76rem;
+  }
+
+  .check{
+    width:19px;height:19px;flex-shrink:0;margin-top:2px;
+    border-radius:5px;border:1.5px solid var(--line-strong);
+    background:transparent;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .check svg{width:12px;height:12px;opacity:0;}
+  .check.done{background:var(--azure);border-color:var(--azure);}
+  .check.done svg{opacity:1;stroke:#fff;}
+  .todo-text.done{text-decoration:line-through;color:var(--ink-faint);}
+
+  .row-actions{margin-left:auto;display:flex;gap:6px;flex-shrink:0;}
+  .icon-btn{
+    background:transparent;border:none;color:var(--ink-faint);
+    padding:4px;border-radius:5px;line-height:0;
+  }
+  .icon-btn:hover{color:var(--danger);background:var(--danger-bg);}
+  .icon-btn svg{width:15px;height:15px;}
+
+  /* ---------- trello integration ---------- */
+  .trello-card{
+    background:linear-gradient(135deg, rgba(63,111,166,0.14), rgba(199,167,101,0.06));
+    border:1px solid rgba(63,111,166,0.30); border-radius:12px; padding:20px; margin-bottom:24px;
+  }
+  .trello-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .trello-head svg{width:28px;height:28px;color:var(--azure-soft);flex-shrink:0;}
+  .trello-head h3{margin:0;font-family:var(--font-display);font-size:1.25rem;font-weight:600;}
+  .trello-head p{margin:2px 0 0;font-size:.78rem;color:var(--ink-faint);}
+  .trello-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .trello-actions{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .trello-status{font-size:.76rem;color:var(--ink-faint);}
+  .trello-status.ok{color:#8ec099;} .trello-status.warn{color:var(--warn);}
+  @media (max-width:860px){.trello-grid{grid-template-columns:1fr;}}
+
+  /* ---------- annuaire ---------- */
+  .doc-card{
+    background:linear-gradient(135deg, rgba(63,111,166,0.18), rgba(199,167,101,0.08));
+    border:1px solid rgba(63,111,166,0.35);
+    border-radius:12px;
+    padding:22px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:24px;
+  }
+  .doc-card svg{width:34px;height:34px;flex-shrink:0;color:var(--azure-soft);}
+  .doc-card h3{margin:0 0 3px;font-family:var(--font-display);font-size:1.25rem;font-weight:600;}
+  .doc-card p{margin:0;font-size:0.84rem;color:var(--ink-muted);}
+  .doc-card .btn{margin-left:auto;flex-shrink:0;}
+  .doc-config{margin-top:12px;}
+  .doc-config summary{cursor:pointer;font-size:0.78rem;color:var(--ink-faint);margin-bottom:0;}
+  .doc-config summary:hover{color:var(--ink-muted);}
+  .doc-config .row{margin-top:10px;}
+
+  .roster{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+  }
+  .roster-card{
+    background:var(--navy);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+  }
+  .roster-card h4{
+    margin:0 0 8px;
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-faint);
+    display:flex;align-items:center;gap:6px;
+  }
+  .roster-card h4 svg{width:14px;height:14px;}
+  .roster-card textarea{min-height:88px;font-size:0.86rem;}
+  .roster-card .save-hint{font-size:0.7rem;color:var(--ink-faint);margin-top:6px;}
+
+  /* ---------- search & filters ---------- */
+  .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+  .search-box{position:relative;flex:1;min-width:180px;}
+  .search-box svg{
+    position:absolute;left:10px;top:50%;transform:translateY(-50%);
+    width:15px;height:15px;color:var(--ink-faint);pointer-events:none;
+  }
+  .search-box input{padding-left:32px;}
+  .filter-chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .chip{
+    padding:6px 12px;border-radius:20px;border:1px solid var(--line-strong);
+    background:transparent;color:var(--ink-muted);font-size:0.78rem;font-weight:600;
+    white-space:nowrap;
+  }
+  .chip:hover{color:var(--ink);border-color:var(--azure-soft);}
+  .chip.active{background:rgba(63,111,166,0.16);border-color:var(--azure);color:var(--ink);}
+
+  /* ---------- inline edit ---------- */
+  .edit-box{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
+  .edit-box .row2{display:flex;gap:8px;}
+  .edit-actions{display:flex;gap:8px;margin-top:2px;}
+
+  /* ---------- annuaire: member directory ---------- */
+  .import-box{margin-top:14px;}
+  .import-box summary{cursor:pointer;font-size:0.78rem;color:var(--ink-faint);}
+  .import-box summary:hover{color:var(--ink-muted);}
+  .import-box .hint{font-size:0.78rem;color:var(--ink-faint);line-height:1.5;margin:10px 0;}
+  .import-box textarea{min-height:90px;font-family:ui-monospace,monospace;font-size:0.78rem;}
+  .import-actions{display:flex;align-items:center;gap:10px;margin-top:8px;}
+  .import-status{font-size:0.76rem;color:var(--ink-faint);}
+
+  .member-meta{font-size:0.76rem;color:var(--ink-faint);margin:4px 0 0;}
+  .member-updated{font-size:0.76rem;color:var(--ink-faint);margin:2px 0 14px;}
+  .member-table{width:100%;border-collapse:collapse;font-size:0.84rem;}
+  .member-table th{
+    text-align:left;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;
+    color:var(--ink-faint);font-weight:600;padding:0 10px 8px;border-bottom:1px solid var(--line-strong);
+  }
+  .member-table td{padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-muted);}
+  .member-table tr:last-child td{border-bottom:none;}
+  .member-table td.m-name{color:var(--ink);font-weight:600;}
+  .member-table .m-notes{max-width:280px;font-size:0.8rem;}
+
+  section.tab-panel{display:none;}
+  section.tab-panel.active{display:block;animation:tabFadeIn .18s ease-out;}
+  @keyframes tabFadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){
+    section.tab-panel.active{animation:none;}
+  }
+
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+
+  .toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);
+    background:var(--navy-elevated);
+    border:1px solid var(--line-strong);
+    border-left:3px solid var(--azure-soft);
+    color:var(--ink);
+    padding:9px 18px;
+    border-radius:8px;
+    font-size:0.82rem;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+    z-index:50;
+  }
+  .toast.success{border-left-color:#8ec099;}
+  .toast.error{border-left-color:var(--danger);}
+
+  .btn[disabled], button[disabled]{
+    opacity:0.55;
+    cursor:default;
+    pointer-events:none;
+  }
+
+  .loading-hint{
+    padding:20px 4px;
+    color:var(--ink-faint);
+    font-size:0.85rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .loading-dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--azure-soft);
+    animation:loadingPulse 1s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(2){animation-delay:.15s;}
+  .loading-dot:nth-child(3){animation-delay:.3s;}
+  @keyframes loadingPulse{0%,80%,100%{opacity:.25;transform:scale(0.8);}40%{opacity:1;transform:scale(1);}}
+  @media (prefers-reduced-motion: reduce){
+    .loading-dot{animation:none;opacity:.6;}
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .banner{
+    border:1px solid rgba(201,162,75,0.35);
+    background:var(--warn-bg);
+    color:#e2c98b;
+    padding:12px 16px;
+    border-radius:8px;
+    font-size:0.85rem;
+    margin-bottom:20px;
+    line-height:1.5;
+  }
+
+  /* ---------- confirm modal ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(6,10,18,0.6);
+    display:none;align-items:center;justify-content:center;z-index:100;padding:20px;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-card{
+    background:var(--navy-elevated);border:1px solid var(--line-strong);
+    border-radius:12px;padding:22px;max-width:360px;width:100%;
+  }
+  .modal-card p{margin:0 0 18px;color:var(--ink-muted);font-size:0.9rem;line-height:1.5;}
+  .modal-card .modal-actions{display:flex;justify-content:flex-end;gap:10px;}
+
+  /* ---------- dashboard ---------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:14px;margin-bottom:28px;}
+  .stat-card{
+    background:var(--navy);border:1px solid var(--line);border-radius:11px;padding:18px;
+  }
+  .stat-card .num{font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--ink);line-height:1;}
+  .stat-card .num.danger{color:#e08d78;}
+  .stat-card .num.warn{color:var(--warn);}
+  .stat-card .label{font-size:0.78rem;color:var(--ink-faint);margin-top:6px;}
+  .dash-section{margin-bottom:28px;}
+  .dash-section h3{
+    font-family:var(--font-display);font-size:1.15rem;font-weight:600;margin:0 0 12px;color:var(--ink);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .dash-section h3 a{font-size:0.76rem;font-weight:600;color:var(--azure-soft);font-family:var(--font-body);}
+  .dash-empty{font-size:0.85rem;color:var(--ink-faint);padding:6px 0;}
+
+  /* ---------- historique ---------- */
+  .hist-item{display:flex;gap:12px;padding:13px 4px;border-bottom:1px solid var(--line);align-items:flex-start;}
+  .hist-item:last-child{border-bottom:none;}
+  .hist-icon{
+    width:28px;height:28px;flex-shrink:0;border-radius:50%;
+    background:var(--navy-elevated);display:flex;align-items:center;justify-content:center;
+    color:var(--azure-soft);
+  }
+  .hist-icon svg{width:14px;height:14px;}
+  .hist-icon.act-suppression{color:var(--danger);}
+  .hist-icon.act-resolution{color:#8ec099;}
+  .hist-text{font-size:0.86rem;color:var(--ink-muted);line-height:1.45;}
+  .hist-text b{color:var(--ink);font-weight:600;}
+  .hist-time{font-size:0.75rem;color:var(--ink-faint);margin-top:2px;}
+
+  /* ---------- attachments & comments ---------- */
+  .attach-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+  .attach-thumb{
+    width:56px;height:56px;border-radius:7px;overflow:hidden;border:1px solid var(--line-strong);
+    display:block;background:var(--navy);
+  }
+  .attach-thumb img{width:100%;height:100%;object-fit:cover;}
+  .attach-add{
+    width:56px;height:56px;border-radius:7px;border:1px dashed var(--line-strong);
+    display:flex;align-items:center;justify-content:center;color:var(--ink-faint);background:transparent;
+  }
+  .attach-add:hover{color:var(--azure-soft);border-color:var(--azure-soft);}
+  .attach-add svg{width:18px;height:18px;}
+  .row-actions .icon-btn.comment-btn{color:var(--ink-faint);}
+
+  /* ---------- mobile ---------- */
+  .bottom-nav{display:none;}
+
+  @media (max-width: 860px){
+    .shell{flex-direction:column;}
+    .rail{
+      display:none;
+    }
+    main.stage{padding:20px 16px 96px;max-width:100%;}
+    .page-head h2{font-size:1.7rem;}
+    .roster{grid-template-columns:1fr;}
+    .stat-grid{grid-template-columns:1fr 1fr;}
+    .composer .row{flex-direction:column;}
+    .doc-card{flex-direction:column;align-items:flex-start;}
+    .doc-card .btn{margin-left:0;}
+
+    .mobile-head{
+      display:flex;align-items:center;gap:10px;
+      padding:16px;border-bottom:1px solid var(--line);
+      background:var(--navy);
+      position:sticky;top:0;z-index:10;
+    }
+    .mobile-head svg{width:22px;height:26px;}
+    .mobile-head h1{font-family:var(--font-display);font-size:1.2rem;margin:0;font-weight:600;}
+    .mobile-head p{margin:0;font-size:0.68rem;color:var(--ink-faint);}
+
+    .bottom-nav{
+      display:flex;
+      position:fixed;bottom:0;left:0;right:0;
+      background:var(--navy);
+      border-top:1px solid var(--line);
+      padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+      z-index:20;
+    }
+    .bottom-nav button{
+      flex:1;
+      display:flex;flex-direction:column;align-items:center;gap:3px;
+      background:none;border:none;color:var(--ink-faint);
+      padding:6px 2px;font-size:0.64rem;font-weight:600;
+      border-radius:8px;
+    }
+    .bottom-nav button svg{width:19px;height:19px;}
+    .bottom-nav button.active{color:var(--azure-soft);}
+    .bottom-nav .count{
+      position:relative;top:-1px;font-size:0.62rem;color:var(--gold);
+    }
+  }
+  @media (min-width:861px){
+    .mobile-head{display:none;}
+  }
+
+</style>
+</head>
+<body>
+
+<div class="mobile-head">
+  <svg viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 1C12 1 15 4 15 8C15 10 13.5 11 13.5 11C13.5 11 17 11.5 17 15C17 17.5 14.5 18.5 14.5 18.5L20 22L12 20L4 22L9.5 18.5C9.5 18.5 7 17.5 7 15C7 11.5 10.5 11 10.5 11C10.5 11 9 10 9 8C9 4 12 1 12 1Z" stroke="#c7a765" stroke-width="1.1" stroke-linejoin="round"/><path d="M12 20V29" stroke="#c7a765" stroke-width="1.1"/></svg>
+  <div>
+    <h1>Azuralys</h1>
+    <p>Poste de garde</p>
+  </div>
+</div>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">
+      <svg viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 1C12 1 15 4 15 8C15 10 13.5 11 13.5 11C13.5 11 17 11.5 17 15C17 17.5 14.5 18.5 14.5 18.5L20 22L12 20L4 22L9.5 18.5C9.5 18.5 7 17.5 7 15C7 11.5 10.5 11 10.5 11C10.5 11 9 10 9 8C9 4 12 1 12 1Z" stroke="#c7a765" stroke-width="1.1" stroke-linejoin="round"/><path d="M12 20V29" stroke="#c7a765" stroke-width="1.1"/></svg>
+      <div class="brand-text">
+        <h1>Azuralys</h1>
+        <p>POSTE DE GARDE</p>
+      </div>
+    </div>
+    <nav class="tabs" id="railNav"></nav>
+    <div class="rail-foot">
+      Connecté·e comme<br><span class="who" id="whoLabel">—</span>
+    </div>
+  </aside>
+
+  <main class="stage">
+
+    <section class="tab-panel active" id="panel-dashboard">
+      <div class="page-head">
+        <p class="eyebrow">Vue d'ensemble</p>
+        <h2>Tableau de bord</h2>
+        <p class="lede">Ce qu'il faut savoir en arrivant de garde, en un coup d'œil.</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="num danger" id="dash-stat-graves">0</div>
+          <div class="label">Incidents graves ouverts</div>
+        </div>
+        <div class="stat-card">
+          <div class="num warn" id="dash-stat-incidents">0</div>
+          <div class="label">Incidents actifs</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" id="dash-stat-todos">0</div>
+          <div class="label">Tâches en attente</div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <h3>Consignes épinglées</h3>
+        <div id="dash-pinned"></div>
+      </div>
+
+      <div class="dash-section">
+        <h3>Incidents à surveiller</h3>
+        <div id="dash-incidents"></div>
+      </div>
+
+      <div class="dash-section">
+        <h3>Tâches en attente</h3>
+        <div id="dash-todos"></div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-annonces">
+      <div class="page-head">
+        <p class="eyebrow">Annonces &amp; consignes</p>
+        <h2>Tableau de la maison</h2>
+        <p class="lede">Ce que les Préfets, Sentinelles et Gardiens doivent savoir ou garder à l'esprit. Épinglez les consignes permanentes.</p>
+      </div>
+      <div class="composer">
+        <div class="row"><div>
+          <label class="field-label" for="ann-title">Titre</label>
+          <input type="text" id="ann-title" placeholder="Ex. : Ronde de nuit — nouvel horaire">
+        </div></div>
+        <div class="row"><div>
+          <label class="field-label" for="ann-body">Message</label>
+          <textarea id="ann-body" rows="3" placeholder="Détails de l'annonce ou de la consigne..."></textarea>
+        </div></div>
+        <div class="row" style="align-items:center;">
+          <label style="display:flex;align-items:center;gap:7px;font-size:0.84rem;color:var(--ink-muted);">
+            <input type="checkbox" id="ann-pinned" style="width:auto;">
+            Épingler comme consigne permanente
+          </label>
+          <button class="btn" id="ann-submit" style="margin-left:auto;">Publier</button>
+        </div>
+      </div>
+      <div id="trello-mini-annonces" class="trello-mini"></div>
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" id="ann-search" placeholder="Rechercher une annonce...">
+        </div>
+      </div>
+      <div class="list" id="ann-list"></div>
+      <div class="empty" id="ann-empty" style="display:none;">
+        <strong>Rien à annoncer pour l'instant</strong>
+        Le tableau est vide — la première annonce ou consigne apparaîtra ici pour tout le monde.
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-incidents">
+      <div class="page-head">
+        <p class="eyebrow">Rapports</p>
+        <h2>Incidents</h2>
+        <p class="lede">Consignez tout incident constaté pendant votre service. Chaque rapport reste visible et modifiable par les trois rôles.</p>
+      </div>
+      <div class="composer">
+        <div class="row"><div>
+          <label class="field-label" for="inc-title">Objet</label>
+          <input type="text" id="inc-title" placeholder="Ex. : Intrusion signalée près des communs">
+        </div></div>
+        <div class="row"><div>
+          <label class="field-label" for="inc-body">Description</label>
+          <textarea id="inc-body" rows="3" placeholder="Ce qui s'est passé, où, qui était impliqué..."></textarea>
+        </div></div>
+        <div class="row" style="align-items:flex-end;">
+          <div style="flex:0 0 180px;">
+            <label class="field-label" for="inc-sev">Gravité</label>
+            <select id="inc-sev">
+              <option value="faible">Faible</option>
+              <option value="modere" selected>Modérée</option>
+              <option value="grave">Grave</option>
+            </select>
+          </div>
+          <button class="btn" id="inc-submit" style="margin-left:auto;">Déposer le rapport</button>
+        </div>
+      </div>
+      <div id="trello-mini-incidents" class="trello-mini"></div>
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" id="inc-search" placeholder="Rechercher un incident...">
+        </div>
+        <div class="filter-chips" id="inc-filters">
+          <button class="chip" data-filter="actifs">Actifs</button>
+          <button class="chip" data-filter="resolu">Résolus</button>
+          <button class="chip" data-filter="tous">Tous</button>
+        </div>
+      </div>
+      <div class="list" id="inc-list"></div>
+      <div class="empty" id="inc-empty" style="display:none;">
+        <strong>Aucun incident en cours</strong>
+        Tout est calme. Les rapports déposés apparaîtront ici, classés du plus récent au plus ancien.
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-todo">
+      <div class="page-head">
+        <p class="eyebrow">Tâches</p>
+        <h2>À faire</h2>
+        <p class="lede">La liste commune des Préfets, Sentinelles et Gardiens. Cochez une tâche une fois accomplie.</p>
+      </div>
+      <div class="composer">
+        <div class="row">
+          <div style="flex:2;">
+            <label class="field-label" for="todo-text">Tâche</label>
+            <input type="text" id="todo-text" placeholder="Ex. : Vérifier les rondes de la tour est">
+          </div>
+          <div style="flex:1;">
+            <label class="field-label" for="todo-who">Assigné à (facultatif)</label>
+            <input type="text" id="todo-who" placeholder="Ex. : un Gardien">
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" id="todo-submit">Ajouter à la liste</button>
+        </div>
+      </div>
+      <div id="trello-mini-todo" class="trello-mini"></div>
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" id="todo-search" placeholder="Rechercher une tâche...">
+        </div>
+      </div>
+      <div class="list" id="todo-list"></div>
+      <div class="empty" id="todo-empty" style="display:none;">
+        <strong>Aucune tâche en attente</strong>
+        Ajoutez la première chose à faire — elle sera visible par toute la maison.
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-annuaire">
+      <div class="page-head">
+        <p class="eyebrow">Membres</p>
+        <h2>Annuaire</h2>
+        <p class="lede">La liste complète des membres reste tenue dans le document partagé (Doc ou Sheet). Cette page garde un accès rapide, les titulaires actuels des trois rôles, et une copie recherchable plus bas.</p>
+      </div>
+
+      <div class="doc-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8M8 9h2"/></svg>
+        <div>
+          <h3>Document des membres</h3>
+          <p>Ouvre l'annuaire complet de la maison Azuralys (Google Docs ou Sheets).</p>
+        </div>
+        <a class="btn" id="doc-link" href="#" target="_blank" rel="noopener">Ouvrir le document</a>
+      </div>
+
+      <details class="doc-config">
+        <summary>Configurer le lien du document</summary>
+        <div class="row">
+          <div style="flex:1;">
+            <label class="field-label" for="doc-url-input">URL du document (Doc ou Sheet)</label>
+            <input type="url" id="doc-url-input" placeholder="https://docs.google.com/document/d/...">
+          </div>
+          <div style="display:flex;align-items:flex-end;">
+            <button class="btn ghost" id="doc-url-save">Enregistrer</button>
+          </div>
+        </div>
+      </details>
+
+      <div style="height:28px;"></div>
+
+      <div class="roster">
+        <div class="roster-card">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Préfets</h4>
+          <textarea id="roster-prefets" placeholder="Noms des Préfets actuels..."></textarea>
+          <p class="save-hint">Enregistré automatiquement</p>
+        </div>
+        <div class="roster-card">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg>Sentinelles</h4>
+          <textarea id="roster-sentinelle" placeholder="Noms des Sentinelles actuelles..."></textarea>
+          <p class="save-hint">Enregistré automatiquement</p>
+        </div>
+        <div class="roster-card">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.5 5 5.5.7-4 3.8 1 5.5-5-2.7-5 2.7 1-5.5-4-3.8 5.5-.7z"/></svg>Gardiens</h4>
+          <textarea id="roster-gardien" placeholder="Noms des Gardiens actuels..."></textarea>
+          <p class="save-hint">Enregistré automatiquement</p>
+        </div>
+      </div>
+
+      <div style="height:32px;"></div>
+
+      <div id="trello-mini-annuaire" class="trello-mini"></div>
+
+      <div class="page-head" style="margin-bottom:16px;">
+        <p class="eyebrow">Annuaire des membres</p>
+        <h2 style="font-size:1.5rem;">Copie consultable</h2>
+        <p class="lede">Une copie recherchable des membres, tenue à jour par la maison. La feuille Google reste la source officielle — utilisez « Mettre à jour » ci-dessous après une modification du document.</p>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" id="mem-search" placeholder="Rechercher un membre...">
+        </div>
+      </div>
+      <p class="member-updated" id="mem-updated"></p>
+      <div style="overflow-x:auto;">
+        <table class="member-table" id="mem-table" style="display:none;">
+          <thead>
+            <tr>
+              <th>Nom</th><th>Hibou</th><th>Matière</th><th>Aide</th><th>Année</th><th>Notes</th><th>Filleul</th><th>Parrain</th>
+            </tr>
+          </thead>
+          <tbody id="mem-tbody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="mem-empty">
+        <strong>Annuaire pas encore importé</strong>
+        Collez les données ci-dessous pour créer la première copie consultable.
+      </div>
+
+      <details class="import-box">
+        <summary>Mettre à jour l'annuaire depuis le document</summary>
+        <p class="hint">Dans le Google Sheet, sélectionnez les lignes (avec l'en-tête : Prénom Nom, Hibou, Matière, Aide, Année, Notes, Filleul, Parrain), copiez (Ctrl/Cmd+C), puis collez ici.</p>
+        <textarea id="mem-paste" placeholder="Collez ici les cellules copiées depuis le Google Sheet..."></textarea>
+        <div class="import-actions">
+          <button class="btn ghost" id="mem-import">Importer</button>
+          <span class="import-status" id="mem-import-status"></span>
+        </div>
+      </details>
+    </section>
+
+    <section class="tab-panel" id="panel-historique">
+      <div class="page-head">
+        <p class="eyebrow">Journal</p>
+        <h2>Historique</h2>
+        <p class="lede">Ce que les Préfets, Sentinelles et Gardiens ont fait ou changé, dans l'ordre chronologique.</p>
+      </div>
+      <div class="list" id="hist-list"></div>
+      <div class="empty" id="hist-empty" style="display:none;">
+        <strong>Rien à afficher pour l'instant</strong>
+        Les actions effectuées dans les autres onglets (créations, modifications, résolutions, suppressions) apparaîtront ici.
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<nav class="bottom-nav" id="bottomNav"></nav>
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal-card">
+    <p id="confirmMessage">Confirmer cette action ?</p>
+    <div class="modal-actions">
+      <button class="btn ghost" id="confirmCancel">Annuler</button>
+      <button class="btn danger" id="confirmOk" style="background:var(--danger);color:#fff;">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   Azuralys — Poste de garde
+   Données partagées entre Préfets / Sentinelles / Gardiens via la
+   capacité "db" (voir claude.use). Fonctionne uniquement une fois
+   la page publiée et ouverte par des membres signés de l'organisation.
+--------------------------------------------------------------- */
+
+const ICONS = {
+  dashboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+  annonces: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l18-7-7 18-2-8-8-2z"/></svg>',
+  incidents: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 9v4M12 17h.01M10.3 3.9L2.6 17.5A1.6 1.6 0 0 0 4 20h16a1.6 1.6 0 0 0 1.4-2.5L13.7 3.9a1.6 1.6 0 0 0-3.4 0z"/></svg>',
+  todo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l2.5 2.5L16 8"/><rect x="3" y="4" width="18" height="17" rx="2.5"/></svg>',
+  annuaire: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3.3 2.9-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/><path d="M16.5 14.5c2.4.2 4 2.2 4 5.5"/><circle cx="16.2" cy="7.5" r="2.4"/></svg>',
+  historique: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+};
+
+const TABS = [
+  { id: 'dashboard', label: 'Tableau de bord' },
+  { id: 'annonces', label: 'Annonces' },
+  { id: 'incidents', label: 'Incidents' },
+  { id: 'todo', label: 'À faire' },
+  { id: 'annuaire', label: 'Annuaire' },
+  { id: 'historique', label: 'Historique' },
+];
+
+let db = null;
+let userCap = null;
+let myId = null;
+const profileCache = new Map(); // id -> name
+
+let announcements = [];
+let incidents = [];
+let todos = [];
+
+// search / filter state
+let annSearch = '';
+let incSearch = '';
+let incFilter = 'actifs'; // actifs | resolu | tous
+let todoSearch = '';
+let memSearch = '';
+
+// inline-edit state: id of the row currently being edited, or null
+let editingAnnId = null;
+let editingIncId = null;
+let editingTodoId = null;
+
+function escapeHtml(s){
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Laisse un champ multi-lignes grandir avec son contenu au lieu de
+// rester sur une hauteur fixe avec barre de défilement interne.
+function autoGrow(el){
+  if(!el) return;
+  const resize = () => { el.style.height = 'auto'; el.style.height = (el.scrollHeight + 2) + 'px'; };
+  el.addEventListener('input', resize);
+  resize();
+}
+
+// accent-insensitive, case-insensitive matcher used by every search box
+function normalize(s){
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+function matches(query, ...fields){
+  const q = normalize(query).trim();
+  if(!q) return true;
+  return fields.some(f => normalize(f).includes(q));
+}
+
+function fmtDate(ts){
+  if(!ts) return '';
+  const d = new Date(ts);
+  const today = new Date();
+  const sameDay = d.toDateString() === today.toDateString();
+  const time = d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+  if(sameDay) return "Aujourd'hui à " + time;
+  return d.toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) + ' à ' + time;
+}
+
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(showToast._h);
+  showToast._h = setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+/* ---------------- nav ---------------- */
+function renderNav(){
+  const counts = {
+    dashboard: null,
+    annonces: announcements.length,
+    incidents: incidents.filter(i => i.status !== 'resolu').length,
+    todo: todos.filter(t => !t.done).length,
+    annuaire: null,
+    historique: null,
+  };
+  const rail = document.getElementById('railNav');
+  const bottom = document.getElementById('bottomNav');
+  rail.innerHTML = '';
+  bottom.innerHTML = '';
+  TABS.forEach(t => {
+    const active = t.id === currentTab;
+    const countHtml = counts[t.id] ? `<span class="count">${counts[t.id]}</span>` : '';
+    const railBtn = document.createElement('button');
+    railBtn.className = 'tab-btn' + (active ? ' active' : '');
+    railBtn.innerHTML = ICONS[t.id] + `<span>${t.label}</span>` + countHtml;
+    railBtn.onclick = () => switchTab(t.id);
+    rail.appendChild(railBtn);
+
+    const bBtn = document.createElement('button');
+    bBtn.className = active ? 'active' : '';
+    bBtn.innerHTML = ICONS[t.id] + `<span>${t.label}${counts[t.id] ? ` <span class="count">${counts[t.id]}</span>` : ''}</span>`;
+    bBtn.onclick = () => switchTab(t.id);
+    bottom.appendChild(bBtn);
+  });
+}
+
+let currentTab = 'dashboard';
+function switchTab(id){
+  currentTab = id;
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  renderNav();
+}
+
+/* ---------------- profiles ---------------- */
+async function resolveNames(ids){
+  const missing = [...new Set(ids)].filter(id => id && !profileCache.has(id));
+  if(!missing.length || !userCap) return false;
+  try{
+    const profiles = await userCap.profiles(missing);
+    missing.forEach(id => {
+      const name = profiles?.[id]?.name;
+      profileCache.set(id, name || 'Un membre');
+    });
+  }catch(e){
+    missing.forEach(id => profileCache.set(id, 'Un membre'));
+  }
+  return true;
+}
+
+function nameFor(id){
+  if(!id) return 'Inconnu';
+  if(id === myId) return 'Vous';
+  return profileCache.get(id) || '…';
+}
+
+/* ---------------- confirm modal ---------------- */
+let confirmResolver = null;
+function confirmAction(message){
+  document.getElementById('confirmMessage').textContent = message;
+  document.getElementById('confirmOverlay').classList.add('show');
+  return new Promise(resolve => { confirmResolver = resolve; });
+}
+function wireConfirmModal(){
+  document.getElementById('confirmCancel').onclick = () => {
+    document.getElementById('confirmOverlay').classList.remove('show');
+    if(confirmResolver) confirmResolver(false);
+    confirmResolver = null;
+  };
+  document.getElementById('confirmOk').onclick = () => {
+    document.getElementById('confirmOverlay').classList.remove('show');
+    if(confirmResolver) confirmResolver(true);
+    confirmResolver = null;
+  };
+  document.getElementById('confirmOverlay').addEventListener('click', e => {
+    if(e.target.id === 'confirmOverlay'){
+      e.target.classList.remove('show');
+      if(confirmResolver) confirmResolver(false);
+      confirmResolver = null;
+    }
+  });
+}
+
+/* ---------------- journal / historique ---------------- */
+let journal = [];
+const JOURNAL_TYPE_LABEL = {annonce:'Annonce', incident:'Incident', tache:'Tâche'};
+const JOURNAL_ICON = {
+  creation: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>',
+  modification: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  suppression: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m-8 0 1 13a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-13"/></svg>',
+  statut: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l2.5 2.5L16 8"/><rect x="3" y="4" width="18" height="17" rx="2.5"/></svg>',
+  resolution: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>',
+  completion: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>',
+  epinglage: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l1.5 5.5L19 9l-4.5 3 1 6-3.5-3-3.5 3 1-6L5 9l5.5-1.5z"/></svg>',
+  piece_jointe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.5"/></svg>',
+};
+const JOURNAL_ACTION_VERB = {
+  creation: 'a créé',
+  modification: 'a modifié',
+  suppression: 'a supprimé',
+  statut: 'a changé le statut de',
+  resolution: 'a résolu',
+  completion: 'a coché',
+  epinglage: 'a mis à jour',
+  piece_jointe: 'a ajouté une photo à',
+};
+
+// Fire-and-forget: journal entries are a convenience log, never block the
+// action they describe on a successful write.
+function logActivity(type, action, label, detail){
+  if(!db) return;
+  db.collection('journal').add({
+    type, action, label: label || '', detail: detail || '',
+    authorId: myId, createdAt: Date.now(),
+  }).catch(()=>{});
+}
+
+function renderHistorique(){
+  const list = document.getElementById('hist-list');
+  const empty = document.getElementById('hist-empty');
+  if(!list) return;
+  const sorted = [...journal].sort((a,b) => (b.createdAt||0) - (a.createdAt||0)).slice(0, 150);
+  empty.style.display = sorted.length ? 'none' : 'block';
+  list.innerHTML = sorted.map(j => `
+    <div class="hist-item">
+      <div class="hist-icon act-${j.action}">${JOURNAL_ICON[j.action] || JOURNAL_ICON.modification}</div>
+      <div>
+        <div class="hist-text"><b>${escapeHtml(nameFor(j.authorId))}</b> ${JOURNAL_ACTION_VERB[j.action] || 'a modifié'} ${JOURNAL_TYPE_LABEL[j.type]?.toLowerCase() || ''} « ${escapeHtml(j.label)} »${j.detail ? ' — ' + escapeHtml(j.detail) : ''}</div>
+        <div class="hist-time">${fmtDate(j.createdAt)}</div>
+      </div>
+    </div>
+  `).join('');
+  resolveNames(sorted.map(j => j.authorId)).then(changed => { if(changed && currentTab==='historique') renderHistorique(); });
+}
+
+/* ---------------- dashboard ---------------- */
+function renderDashboard(){
+  const graves = document.getElementById('dash-stat-graves');
+  const actifsEl = document.getElementById('dash-stat-incidents');
+  const todosEl = document.getElementById('dash-stat-todos');
+  if(!graves || !actifsEl || !todosEl) return; // panel absent de cette version
+
+  const activeIncidents = incidents.filter(i => i.status !== 'resolu');
+  const gravesOuverts = activeIncidents.filter(i => i.severity === 'grave');
+  const pendingTodos = todos.filter(t => !t.done);
+  const pinnedAnn = announcements.filter(a => a.pinned);
+
+  graves.textContent = gravesOuverts.length;
+  actifsEl.textContent = activeIncidents.length;
+  todosEl.textContent = pendingTodos.length;
+
+  const pinnedBox = document.getElementById('dash-pinned');
+  pinnedBox.innerHTML = pinnedAnn.length ? pinnedAnn.slice(0, 5).map(a => `
+    <div class="row-item" data-goto="annonces">
+      <div style="flex:1;min-width:0;">
+        <p class="item-title" style="margin:0;">${escapeHtml(a.title)}</p>
+        ${a.content ? `<p class="item-body">${escapeHtml(a.content)}</p>` : ''}
+        <p class="meta-line">${fmtDate(a.createdAt)}</p>
+      </div>
+    </div>`).join('') : `<div class="empty" style="display:block;"><strong>Aucune consigne épinglée</strong>Les consignes permanentes épinglées dans l'onglet Annonces apparaîtront ici.</div>`;
+
+  const incBox = document.getElementById('dash-incidents');
+  const incSorted = [...activeIncidents].sort((a,b) => {
+    if((a.severity==='grave') !== (b.severity==='grave')) return a.severity==='grave' ? -1 : 1;
+    return (b.createdAt||0)-(a.createdAt||0);
+  });
+  incBox.innerHTML = incSorted.length ? incSorted.slice(0, 5).map(i => `
+    <div class="row-item" data-goto="incidents">
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <p class="item-title" style="margin:0;">${escapeHtml(i.title)}</p>
+          <span class="tag sev-${i.severity}">${SEV_LABEL[i.severity]||i.severity}</span>
+        </div>
+        <p class="meta-line">${fmtDate(i.createdAt)}</p>
+      </div>
+    </div>`).join('') : `<div class="empty" style="display:block;"><strong>Tout est calme</strong>Aucun incident actif pour le moment.</div>`;
+
+  const todoBox = document.getElementById('dash-todos');
+  const todoSorted = [...pendingTodos].sort((a,b) => (b.createdAt||0)-(a.createdAt||0));
+  todoBox.innerHTML = todoSorted.length ? todoSorted.slice(0, 5).map(t => `
+    <div class="row-item" data-goto="todo">
+      <div style="flex:1;min-width:0;">
+        <p class="item-title" style="margin:0;">${escapeHtml(t.text)}</p>
+        <p class="meta-line">${t.assignee ? 'Assigné à ' + escapeHtml(t.assignee) : 'Non assignée'}</p>
+      </div>
+    </div>`).join('') : `<div class="empty" style="display:block;"><strong>Rien en attente</strong>Toutes les tâches ont été traitées.</div>`;
+
+  document.querySelectorAll('#panel-dashboard [data-goto]').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.onclick = () => switchTab(el.dataset.goto);
+  });
+}
+
+/* ---------------- announcements ---------------- */
+function renderAnnouncements(){
+  const list = document.getElementById('ann-list');
+  const empty = document.getElementById('ann-empty');
+  const all = [...announcements].sort((a,b) => {
+    if(!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
+    return (b.createdAt||0) - (a.createdAt||0);
+  });
+  const sorted = all.filter(a => matches(annSearch, a.title, a.content));
+
+  if(!all.length){
+    empty.innerHTML = `<strong>Rien à annoncer pour l'instant</strong>Le tableau est vide — la première annonce ou consigne apparaîtra ici pour tout le monde.`;
+    empty.style.display = 'block';
+  } else if(!sorted.length){
+    empty.innerHTML = `<strong>Aucun résultat</strong>Aucune annonce ne correspond à « ${escapeHtml(annSearch)} ».`;
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+  }
+
+  list.innerHTML = sorted.map(a => {
+    if(a.id === editingAnnId){
+      return `
+      <div class="row-item">
+        <div class="edit-box">
+          <input type="text" class="edit-title" data-field="title" value="${escapeHtml(a.title)}" placeholder="Titre">
+          <textarea class="edit-body" rows="3" data-field="body" placeholder="Message">${escapeHtml(a.content||'')}</textarea>
+          <div class="edit-actions">
+            <button class="btn small" data-save="${a.id}">Enregistrer</button>
+            <button class="btn small ghost" data-cancel="${a.id}">Annuler</button>
+          </div>
+        </div>
+      </div>`;
+    }
+    return `
+    <div class="row-item">
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <p class="item-title" style="margin:0;">${escapeHtml(a.title)}</p>
+          ${a.pinned ? '<span class="tag pinned">Consigne</span>' : ''}
+        </div>
+        ${a.content ? `<p class="item-body">${escapeHtml(a.content)}</p>` : ''}
+        <p class="meta-line"><b>${escapeHtml(nameFor(a.authorId))}</b> · ${fmtDate(a.createdAt)}${a.updatedAt ? ' · modifié ' + fmtDate(a.updatedAt) : ''}</p>
+      </div>
+      <div class="row-actions">
+        <button class="icon-btn" title="Épingler / désépingler" data-pin="${a.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l1.5 5.5L19 9l-4.5 3 1 6-3.5-3-3.5 3 1-6L5 9l5.5-1.5z"/></svg>
+        </button>
+        <button class="icon-btn" title="Modifier" data-edit="${a.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        </button>
+        <button class="icon-btn" title="Supprimer" data-del="${a.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m-8 0 1 13a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-13"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+  }).join('');
+
+  list.querySelectorAll('[data-pin]').forEach(btn => btn.onclick = () => {
+    const id = btn.dataset.pin;
+    const doc = announcements.find(x => x.id === id);
+    const next = !doc.pinned;
+    db.collection('announcements').doc(id).update({pinned: next})
+      .then(() => logActivity('annonce', 'epinglage', doc.title, next ? 'Épinglée' : 'Désépinglée'))
+      .catch(()=>showToast("Action impossible."));
+  });
+  list.querySelectorAll('[data-del]').forEach(btn => btn.onclick = async () => {
+    const id = btn.dataset.del;
+    const doc = announcements.find(x => x.id === id);
+    if(!await confirmAction(`Supprimer l'annonce « ${doc.title} » ? Cette action est définitive.`)) return;
+    db.collection('announcements').doc(id).delete()
+      .then(() => logActivity('annonce', 'suppression', doc.title))
+      .catch(()=>showToast("Suppression impossible."));
+  });
+  list.querySelectorAll('[data-edit]').forEach(btn => btn.onclick = () => {
+    editingAnnId = btn.dataset.edit;
+    renderAnnouncements();
+  });
+  list.querySelectorAll('[data-cancel]').forEach(btn => btn.onclick = () => {
+    editingAnnId = null;
+    renderAnnouncements();
+  });
+  list.querySelectorAll('[data-save]').forEach(btn => btn.onclick = () => {
+    const id = btn.dataset.save;
+    const row = btn.closest('.edit-box');
+    const title = row.querySelector('[data-field="title"]').value.trim();
+    if(!title) return showToast("Le titre ne peut pas être vide.", 'error');
+    const content = row.querySelector('[data-field="body"]').value.trim();
+    db.collection('announcements').doc(id).update({title, content, updatedAt: Date.now()})
+      .then(() => { logActivity('annonce', 'modification', title); editingAnnId = null; renderAnnouncements(); })
+      .catch(()=>showToast("Enregistrement impossible."));
+  });
+
+  resolveNames(sorted.map(a => a.authorId)).then(changed => { if(changed && currentTab==='annonces') renderAnnouncements(); });
+}
+
+/* ---------------- incidents ---------------- */
+const SEV_LABEL = {faible:'Faible', modere:'Modérée', grave:'Grave'};
+const STATUS_LABEL = {ouvert:'Ouvert', en_cours:'En cours', resolu:'Résolu'};
+
+function renderIncidents(){
+  const list = document.getElementById('inc-list');
+  const empty = document.getElementById('inc-empty');
+
+  document.querySelectorAll('#inc-filters .chip').forEach(c => c.classList.toggle('active', c.dataset.filter === incFilter));
+
+  const byFilter = incidents.filter(i => {
+    if(incFilter === 'actifs') return i.status !== 'resolu';
+    if(incFilter === 'resolu') return i.status === 'resolu';
+    return true;
+  });
+  const sorted = byFilter
+    .filter(i => matches(incSearch, i.title, i.description))
+    .sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+
+  if(!incidents.length){
+    empty.innerHTML = `<strong>Aucun incident en cours</strong>Tout est calme. Les rapports déposés apparaîtront ici, classés du plus récent au plus ancien.`;
+    empty.style.display = 'block';
+  } else if(!byFilter.length){
+    empty.innerHTML = `<strong>Rien dans cette vue</strong>${incFilter === 'resolu' ? "Aucun incident résolu pour l'instant." : "Aucun incident actif — tout est réglé."}`;
+    empty.style.display = 'block';
+  } else if(!sorted.length){
+    empty.innerHTML = `<strong>Aucun résultat</strong>Aucun incident ne correspond à « ${escapeHtml(incSearch)} ».`;
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+  }
+
+  list.innerHTML = sorted.map(inc => {
+    if(inc.id === editingIncId){
+      return `
+      <div class="row-item">
+        <div class="edit-box">
+          <input type="text" class="edit-title" data-field="title" value="${escapeHtml(inc.title)}" placeholder="Objet">
+          <textarea class="edit-body" rows="3" data-field="body" placeholder="Description">${escapeHtml(inc.description||'')}</textarea>
+          <div class="row2">
+            <select class="edit-sev" data-field="sev" style="width:auto;">
+              <option value="faible" ${inc.severity==='faible'?'selected':''}>Faible</option>
+              <option value="modere" ${inc.severity==='modere'?'selected':''}>Modérée</option>
+              <option value="grave" ${inc.severity==='grave'?'selected':''}>Grave</option>
+            </select>
+          </div>
+          <div class="edit-actions">
+            <button class="btn small" data-save="${inc.id}">Enregistrer</button>
+            <button class="btn small ghost" data-cancel="${inc.id}">Annuler</button>
+          </div>
+        </div>
+      </div>`;
+    }
+    const attachments = inc.attachments || [];
+    return `
+    <div class="row-item">
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <p class="item-title" style="margin:0;">${escapeHtml(inc.title)}</p>
+          <span class="tag sev-${inc.severity}">${SEV_LABEL[inc.severity]||inc.severity}</span>
+        </div>
+        ${inc.description ? `<p class="item-body">${escapeHtml(inc.description)}</p>` : ''}
+        <p class="meta-line"><b>${escapeHtml(nameFor(inc.authorId))}</b> · ${fmtDate(inc.createdAt)}${inc.updatedAt ? ' · modifié ' + fmtDate(inc.updatedAt) : ''}</p>
+        <div class="attach-strip" data-attach-strip="${inc.id}">
+          ${attachments.map(a => `<a class="attach-thumb" href="/_blob/${a}" target="_blank" rel="noopener"><img src="/_blob/${a}" alt="Pièce jointe"></a>`).join('')}
+          <button class="attach-add" title="Ajouter une photo" data-attach="${inc.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>
+          </button>
+          <input type="file" accept="image/*" data-attach-input="${inc.id}" style="display:none;">
+        </div>
+      </div>
+      <div class="row-actions" style="align-items:center;">
+        <select class="status-select" data-status="${inc.id}">
+          <option value="ouvert" ${inc.status==='ouvert'?'selected':''}>Ouvert</option>
+          <option value="en_cours" ${inc.status==='en_cours'?'selected':''}>En cours</option>
+          <option value="resolu" ${inc.status==='resolu'?'selected':''}>Résolu</option>
+        </select>
+        <button class="icon-btn comment-btn" title="Commenter" data-comment="${inc.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.4 9 9 0 0 1-3.5-.7L3 20l1-4.7A8.4 8.4 0 1 1 21 11.5z"/></svg>
+        </button>
+        <button class="icon-btn" title="Modifier" data-edit="${inc.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        </button>
+        <button class="icon-btn" title="Supprimer" data-del="${inc.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m-8 0 1 13a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-13"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+  }).join('');
+
+  list.querySelectorAll('[data-status]').forEach(sel => sel.onchange = () => {
+    const id = sel.dataset.status;
+    const inc = incidents.find(x => x.id === id);
+    const newStatus = sel.value;
+    db.collection('incidents').doc(id).update({status: newStatus, updatedAt: Date.now()})
+      .then(() => logActivity('incident', newStatus === 'resolu' ? 'resolution' : 'statut', inc.title, `${STATUS_LABEL[inc.status]} → ${STATUS_LABEL[newStatus]}`))
+      .catch(()=>showToast("Action impossible."));
+  });
+  list.querySelectorAll('[data-del]').forEach(btn => btn.onclick = async () => {
+    const id = btn.dataset.del;
+    const inc = incidents.find(x => x.id === id);
+    if(!await confirmAction(`Supprimer l'incident « ${inc.title} » ? Cette action est définitive.`)) return;
+    db.collection('incidents').doc(id).delete()
+      .then(() => logActivity('incident', 'suppression', inc.title))
+      .catch(()=>showToast("Suppression impossible."));
+  });
+  list.querySelectorAll('[data-edit]').forEach(btn => btn.onclick = () => {
+    editingIncId = btn.dataset.edit;
+    renderIncidents();
+  });
+  list.querySelectorAll('[data-cancel]').forEach(btn => btn.onclick = () => {
+    editingIncId = null;
+    renderIncidents();
+  });
+  list.querySelectorAll('[data-save]').forEach(btn => btn.onclick = () => {
+    const id = btn.dataset.save;
+    const row = btn.closest('.edit-box');
+    const title = row.querySelector('[data-field="title"]').value.trim();
+    if(!title) return showToast("L'objet ne peut pas être vide.");
+    const description = row.querySelector('[data-field="body"]').value.trim();
+    const severity = row.querySelector('[data-field="sev"]').value;
+    db.collection('incidents').doc(id).update({title, description, severity, updatedAt: Date.now()})
+      .then(() => { logActivity('incident', 'modification', title); editingIncId = null; renderIncidents(); })
+      .catch(()=>showToast("Enregistrement impossible."));
+  });
+  list.querySelectorAll('[data-comment]').forEach(btn => btn.onclick = () => {
+    openIncidentComments(btn, btn.dataset.comment);
+  });
+  list.querySelectorAll('[data-attach]').forEach(btn => btn.onclick = () => {
+    list.querySelector(`[data-attach-input="${btn.dataset.attach}"]`).click();
+  });
+  list.querySelectorAll('[data-attach-input]').forEach(input => input.onchange = () => {
+    const id = input.dataset.attachInput;
+    const file = input.files[0];
+    if(file) uploadIncidentAttachment(id, file);
+    input.value = '';
+  });
+
+  resolveNames(sorted.map(i => i.authorId)).then(changed => { if(changed && currentTab==='incidents') renderIncidents(); });
+}
+
+async function uploadIncidentAttachment(incId, file){
+  const assets = await claude.use('assets');
+  if(!assets) return showToast("Ajout de pièces jointes indisponible pour vous.", 'error');
+  const inc = incidents.find(x => x.id === incId);
+  try{
+    const res = await assets.upload(file);
+    const next = [...(inc.attachments || []), res.id];
+    await db.collection('incidents').doc(incId).update({attachments: next, updatedAt: Date.now()});
+    logActivity('incident', 'piece_jointe', inc.title, file.name);
+    showToast("Photo ajoutée.", 'success');
+  }catch(e){
+    showToast("Envoi de la photo impossible.", 'error');
+  }
+}
+
+async function openIncidentComments(anchorEl, incId){
+  const comments = await claude.use('comments');
+  if(!comments){
+    return showToast("Les commentaires ne sont pas disponibles pour vous ici.", 'error');
+  }
+  try{
+    await comments.openComposer({element: anchorEl});
+  }catch(e){
+    showToast("Impossible d'ouvrir les commentaires.", 'error');
+  }
+}
+
+/* ---------------- todos ---------------- */
+function renderTodos(){
+  const list = document.getElementById('todo-list');
+  const empty = document.getElementById('todo-empty');
+  const all = [...todos].sort((a,b) => {
+    if(!!a.done !== !!b.done) return a.done ? 1 : -1;
+    return (b.createdAt||0) - (a.createdAt||0);
+  });
+  const sorted = all.filter(t => matches(todoSearch, t.text, t.assignee));
+
+  if(!all.length){
+    empty.innerHTML = `<strong>Aucune tâche en attente</strong>Ajoutez la première chose à faire — elle sera visible par toute la maison.`;
+    empty.style.display = 'block';
+  } else if(!sorted.length){
+    empty.innerHTML = `<strong>Aucun résultat</strong>Aucune tâche ne correspond à « ${escapeHtml(todoSearch)} ».`;
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+  }
+
+  list.innerHTML = sorted.map(t => {
+    if(t.id === editingTodoId){
+      return `
+      <div class="row-item">
+        <div class="edit-box">
+          <input type="text" class="edit-title" data-field="text" value="${escapeHtml(t.text)}" placeholder="Tâche">
+          <input type="text" data-field="assignee" value="${escapeHtml(t.assignee||'')}" placeholder="Assigné à (facultatif)">
+          <div class="edit-actions">
+            <button class="btn small" data-save="${t.id}">Enregistrer</button>
+            <button class="btn small ghost" data-cancel="${t.id}">Annuler</button>
+          </div>
+        </div>
+      </div>`;
+    }
+    return `
+    <div class="row-item">
+      <button class="check ${t.done?'done':''}" data-toggle="${t.id}" aria-label="Marquer comme fait">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
+      </button>
+      <div style="flex:1;min-width:0;">
+        <p class="item-title todo-text ${t.done?'done':''}" style="margin:0;">${escapeHtml(t.text)}</p>
+        <p class="meta-line">${t.assignee ? `<b>${escapeHtml(t.assignee)}</b> · ` : ''}ajouté par ${escapeHtml(nameFor(t.authorId))} · ${fmtDate(t.createdAt)}${t.updatedAt ? ' · modifié ' + fmtDate(t.updatedAt) : ''}</p>
+      </div>
+      <div class="row-actions">
+        <button class="icon-btn" title="Modifier" data-edit="${t.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        </button>
+        <button class="icon-btn" title="Supprimer" data-del="${t.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m-8 0 1 13a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-13"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+  }).join('');
+
+  list.querySelectorAll('[data-toggle]').forEach(btn => btn.onclick = () => {
+    const id = btn.dataset.toggle;
+    const item = todos.find(x => x.id === id);
+    const next = !item.done;
+    db.collection('todos').doc(id).update({done: next})
+      .then(() => { if(next) logActivity('tache', 'completion', item.text); })
+      .catch(()=>showToast("Action impossible."));
+  });
+  list.querySelectorAll('[data-del]').forEach(btn => btn.onclick = async () => {
+    const id = btn.dataset.del;
+    const item = todos.find(x => x.id === id);
+    if(!await confirmAction(`Supprimer la tâche « ${item.text} » ? Cette action est définitive.`)) return;
+    db.collection('todos').doc(id).delete()
+      .then(() => { logActivity('tache', 'suppression', item.text); })
+      .catch(()=>showToast("Suppression impossible."));
+  });
+  list.querySelectorAll('[data-edit]').forEach(btn => btn.onclick = () => {
+    editingTodoId = btn.dataset.edit;
+    renderTodos();
+  });
+  list.querySelectorAll('[data-cancel]').forEach(btn => btn.onclick = () => {
+    editingTodoId = null;
+    renderTodos();
+  });
+  list.querySelectorAll('[data-save]').forEach(btn => btn.onclick = () => {
+    const id = btn.dataset.save;
+    const row = btn.closest('.edit-box');
+    const text = row.querySelector('[data-field="text"]').value.trim();
+    if(!text) return showToast("La tâche ne peut pas être vide.", 'error');
+    const assignee = row.querySelector('[data-field="assignee"]').value.trim();
+    db.collection('todos').doc(id).update({text, assignee, updatedAt: Date.now()})
+      .then(() => { logActivity('tache', 'modification', text); editingTodoId = null; renderTodos(); })
+      .catch(()=>showToast("Enregistrement impossible."));
+  });
+
+  resolveNames(sorted.map(t => t.authorId)).then(changed => { if(changed && currentTab==='todo') renderTodos(); });
+}
+
+/* ---------------- trello integration ----------------
+   Le relais Vercel (proxy vers l'API Trello) et l'appel générique
+   trelloRequest sont utilisés par le module "Trello par onglet" tout
+   en bas du fichier — un onglet = une liste Trello, avec son propre
+   bouton d'ajout et ses propres fiches affichées dans l'onglet. */
+const TRELLO_CONFIG = { boardId: 'GAa99FvD', proxyUrl: 'https://azuralys-trello-api.vercel.app/api/trello' };
+
+async function trelloRequest(action, payload={}){
+  const res=await fetch(TRELLO_CONFIG.proxyUrl, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action, ...payload})
+  });
+  if(!res.ok) throw new Error('Réponse API '+res.status);
+  return res.json();
+}
+
+/* ---------------- annuaire / config ---------------- */
+let configState = {googleDocUrl:'', prefets:'', sentinelle:'', gardien:'', membres:[], membresUpdatedAt:0, trello:{listIds:{}}};
+let rosterEditing = {prefets:false, sentinelle:false, gardien:false};
+
+function renderConfig(){
+  const link = document.getElementById('doc-link');
+  const urlInput = document.getElementById('doc-url-input');
+  if(configState.googleDocUrl){
+    link.href = configState.googleDocUrl;
+    link.textContent = 'Ouvrir le document';
+    link.style.pointerEvents = 'auto';
+    link.style.opacity = '1';
+  } else {
+    link.href = '#';
+    link.textContent = 'Lien non configuré';
+    link.style.opacity = '.6';
+  }
+  if(document.activeElement !== urlInput) urlInput.value = configState.googleDocUrl || '';
+
+  ['prefets','sentinelle','gardien'].forEach(role => {
+    const el = document.getElementById('roster-' + role);
+    if(document.activeElement !== el) el.value = configState[role] || '';
+  });
+
+  renderMembers();
+  if(window.AzuralysTrelloMini) AzuralysTrelloMini.onConfigReady();
+}
+
+/* ---------------- annuaire / members directory ---------------- */
+// Header keywords used to map pasted spreadsheet columns onto our fields,
+// so the order doesn't matter as long as the header row is included.
+const MEMBER_HEADER_MAP = [
+  { key: 'name', match: ['prénom', 'prenom', 'nom'] },
+  { key: 'hibou', match: ['hibou'] },
+  { key: 'matiere', match: ['matiér', 'matier', 'matière', 'matiere', 'prédilection', 'predilection'] },
+  { key: 'aide', match: ['aide'] },
+  { key: 'annee', match: ['année', 'annee', 'scolaire'] },
+  { key: 'notes', match: ['note'] },
+  { key: 'filleul', match: ['filleul'] },
+  { key: 'parrain', match: ['parrain'] },
+];
+const MEMBER_FALLBACK_ORDER = ['name','hibou','matiere','aide','annee','notes','filleul','parrain'];
+
+function parseMembersPaste(raw){
+  const lines = raw.split(/\r?\n/).map(l => l.replace(/\u200b/g, '').trimEnd()).filter(l => l.trim().length);
+  if(!lines.length) return [];
+
+  const firstCells = lines[0].split('\t').map(c => c.trim().toLowerCase());
+  let colMap = null;
+  const detected = firstCells.map(cell => {
+    const hit = MEMBER_HEADER_MAP.find(h => h.match.some(m => cell.includes(m)));
+    return hit ? hit.key : null;
+  });
+  const headerFound = detected.filter(Boolean).length >= 2;
+  if(headerFound){
+    colMap = detected;
+    lines.shift();
+  } else {
+    colMap = MEMBER_FALLBACK_ORDER;
+  }
+
+  const out = [];
+  for(const line of lines){
+    const cells = line.split('\t').map(c => c.trim());
+    const row = {};
+    colMap.forEach((key, i) => { if(key) row[key] = cells[i] || ''; });
+    const name = (row.name || '').trim();
+    if(!name || /^prénom nom$/i.test(name)) continue; // skip blank template rows
+    if(row.hibou === 'Hibou') row.hibou = ''; // leftover placeholder value
+    out.push({
+      name,
+      hibou: row.hibou || '',
+      matiere: row.matiere || '',
+      aide: row.aide || '',
+      annee: row.annee || '',
+      notes: row.notes || '',
+      filleul: row.filleul || '',
+      parrain: row.parrain || '',
+    });
+  }
+  return out;
+}
+
+function renderMembers(){
+  const table = document.getElementById('mem-table');
+  const tbody = document.getElementById('mem-tbody');
+  const empty = document.getElementById('mem-empty');
+  const updatedEl = document.getElementById('mem-updated');
+  const members = configState.membres || [];
+
+  if(!members.length){
+    table.style.display = 'none';
+    updatedEl.textContent = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  const filtered = members.filter(m => matches(memSearch, m.name, m.matiere, m.notes, m.filleul, m.parrain));
+  updatedEl.textContent = configState.membresUpdatedAt
+    ? `${members.length} membre${members.length>1?'s':''} · actualisé ${fmtDate(configState.membresUpdatedAt)}`
+    : `${members.length} membre${members.length>1?'s':''}`;
+
+  if(!filtered.length){
+    table.style.display = 'none';
+    empty.innerHTML = `<strong>Aucun résultat</strong>Aucun membre ne correspond à « ${escapeHtml(memSearch)} ».`;
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  table.style.display = 'table';
+  tbody.innerHTML = filtered.map(m => `
+    <tr>
+      <td class="m-name">${escapeHtml(m.name)}</td>
+      <td>${escapeHtml(m.hibou)}</td>
+      <td>${escapeHtml(m.matiere)}</td>
+      <td>${escapeHtml(m.aide)}</td>
+      <td>${escapeHtml(m.annee)}</td>
+      <td class="m-notes">${escapeHtml(m.notes)}</td>
+      <td>${escapeHtml(m.filleul)}</td>
+      <td>${escapeHtml(m.parrain)}</td>
+    </tr>
+  `).join('');
+}
+
+// Writes a single field to config/main without clobbering fields other
+// members may have just changed. update() merges into an existing doc;
+// if the doc doesn't exist yet, fall back to set() to create it.
+function saveConfigField(field, value){
+  return db.doc('config/main').update({[field]: value}).catch(err => {
+    if(err && err.code === 'invalid_argument'){
+      return db.doc('config/main').set({...configState, [field]: value});
+    }
+    throw err;
+  });
+}
+
+function saveConfigFields(fields){
+  return db.doc('config/main').update(fields).catch(err => {
+    if(err && err.code === 'invalid_argument'){
+      return db.doc('config/main').set({...configState, ...fields});
+    }
+    throw err;
+  });
+}
+
+let rosterSaveTimers = {};
+function saveRoster(role, value){
+  clearTimeout(rosterSaveTimers[role]);
+  rosterSaveTimers[role] = setTimeout(() => {
+    saveConfigField(role, value).catch(()=>showToast("Enregistrement impossible."));
+  }, 700);
+}
+
+/* ---------------- wiring ---------------- */
+function wireComposers(){
+  autoGrow(document.getElementById('ann-body'));
+  autoGrow(document.getElementById('inc-body'));
+
+  const annBtn = document.getElementById('ann-submit');
+  const annSubmit = async () => {
+    const titleEl = document.getElementById('ann-title');
+    const title = titleEl.value.trim();
+    if(!title) return showToast("Ajoutez un titre.", 'error');
+    const content = document.getElementById('ann-body').value.trim();
+    const pinned = document.getElementById('ann-pinned').checked;
+    annBtn.disabled = true; annBtn.textContent = 'Publication…';
+    try{
+      await db.collection('announcements').add({title, content, pinned, authorId: myId, createdAt: Date.now()});
+      logActivity('annonce', 'creation', title);
+      titleEl.value = '';
+      document.getElementById('ann-body').value = '';
+      document.getElementById('ann-body').style.height = '';
+      document.getElementById('ann-pinned').checked = false;
+      showToast("Publié sur le tableau.", 'success');
+      titleEl.focus();
+    }catch(e){ showToast("Publication impossible.", 'error'); }
+    finally{ annBtn.disabled = false; annBtn.textContent = 'Publier'; }
+  };
+  annBtn.onclick = annSubmit;
+
+  const incBtn = document.getElementById('inc-submit');
+  const incSubmit = async () => {
+    const titleEl = document.getElementById('inc-title');
+    const title = titleEl.value.trim();
+    if(!title) return showToast("Ajoutez un objet.", 'error');
+    const description = document.getElementById('inc-body').value.trim();
+    const severity = document.getElementById('inc-sev').value;
+    incBtn.disabled = true; incBtn.textContent = 'Envoi…';
+    try{
+      await db.collection('incidents').add({title, description, severity, status:'ouvert', authorId: myId, createdAt: Date.now()});
+      logActivity('incident', 'creation', title, SEV_LABEL[severity]);
+      titleEl.value = '';
+      document.getElementById('inc-body').value = '';
+      document.getElementById('inc-body').style.height = '';
+      document.getElementById('inc-sev').value = 'modere';
+      showToast("Rapport déposé.", 'success');
+      titleEl.focus();
+    }catch(e){ showToast("Dépôt impossible.", 'error'); }
+    finally{ incBtn.disabled = false; incBtn.textContent = 'Déposer le rapport'; }
+  };
+  incBtn.onclick = incSubmit;
+
+  const todoBtn = document.getElementById('todo-submit');
+  const todoTextEl = document.getElementById('todo-text');
+  const todoWhoEl = document.getElementById('todo-who');
+  const todoSubmit = async () => {
+    const text = todoTextEl.value.trim();
+    if(!text) return showToast("Décrivez la tâche.", 'error');
+    const assignee = todoWhoEl.value.trim();
+    todoBtn.disabled = true; todoBtn.textContent = 'Ajout…';
+    try{
+      await db.collection('todos').add({text, assignee, done:false, authorId: myId, createdAt: Date.now()});
+      logActivity('tache', 'creation', text);
+      todoTextEl.value = '';
+      todoWhoEl.value = '';
+      showToast("Ajouté à la liste.", 'success');
+      todoTextEl.focus();
+    }catch(e){ showToast("Ajout impossible.", 'error'); }
+    finally{ todoBtn.disabled = false; todoBtn.textContent = 'Ajouter à la liste'; }
+  };
+  todoBtn.onclick = todoSubmit;
+  todoTextEl.addEventListener('keydown', e => { if(e.key === 'Enter') todoSubmit(); });
+  todoWhoEl.addEventListener('keydown', e => { if(e.key === 'Enter') todoSubmit(); });
+
+  document.getElementById('doc-url-save').onclick = () => {
+    const url = document.getElementById('doc-url-input').value.trim();
+    const next = {...configState, googleDocUrl: url};
+    db.doc('config/main').set(next).then(()=>showToast("Lien enregistré.", 'success')).catch(()=>showToast("Enregistrement impossible.", 'error'));
+  };
+
+  ['prefets','sentinelle','gardien'].forEach(role => {
+    document.getElementById('roster-' + role).addEventListener('input', e => saveRoster(role, e.target.value));
+  });
+
+  [document.getElementById('ann-title'), document.getElementById('ann-body')].forEach(el =>
+    el.addEventListener('keydown', e => { if(e.key==='Enter' && e.ctrlKey) document.getElementById('ann-submit').click(); }));
+
+  // ---- search boxes ----
+  document.getElementById('ann-search').addEventListener('input', e => { annSearch = e.target.value; renderAnnouncements(); });
+  document.getElementById('inc-search').addEventListener('input', e => { incSearch = e.target.value; renderIncidents(); });
+  document.getElementById('todo-search').addEventListener('input', e => { todoSearch = e.target.value; renderTodos(); });
+  document.getElementById('mem-search').addEventListener('input', e => { memSearch = e.target.value; renderMembers(); });
+
+  // ---- incident filter chips ----
+  document.querySelectorAll('#inc-filters .chip').forEach(chip => chip.onclick = () => {
+    incFilter = chip.dataset.filter;
+    renderIncidents();
+  });
+
+  // ---- annuaire import ----
+  document.getElementById('mem-import').onclick = () => {
+    const raw = document.getElementById('mem-paste').value;
+    const statusEl = document.getElementById('mem-import-status');
+    if(!raw.trim()) return showToast("Collez d'abord les données du document.", 'error');
+    const members = parseMembersPaste(raw);
+    if(!members.length){
+      statusEl.textContent = "Aucune ligne reconnue — vérifiez le collage.";
+      return;
+    }
+    saveConfigFields({membres: members, membresUpdatedAt: Date.now()})
+      .then(() => {
+        document.getElementById('mem-paste').value = '';
+        statusEl.textContent = '';
+        showToast(`Annuaire mis à jour — ${members.length} membre${members.length>1?'s':''}.`);
+      })
+      .catch(()=>showToast("Mise à jour impossible."));
+  };
+}
+
+/* ---------------- boot ---------------- */
+async function boot(){
+  renderNav();
+  wireComposers();
+
+  if(!window.claude || typeof window.claude.use !== 'function'){
+    document.querySelectorAll('.composer, .doc-config, .roster').forEach(el => el.style.display='none');
+    const b = document.createElement('div');
+    b.className = 'banner';
+    b.textContent = "Les données partagées ne sont disponibles que sur la page publiée, ouverte par les membres de la maison.";
+    document.querySelector('main.stage').prepend(b);
+    return;
+  }
+
+  try{
+    db = await window.claude.use('db');
+  }catch(e){ db = null; }
+  try{
+    userCap = await window.claude.use('user');
+  }catch(e){ userCap = null; }
+
+  if(!db){
+    const b = document.createElement('div');
+    b.className = 'banner';
+    b.textContent = "Les données partagées ne sont pas disponibles dans cette vue pour le moment.";
+    document.querySelector('main.stage').prepend(b);
+    return;
+  }
+
+  try{ myId = userCap ? await userCap.id() : null; }catch(e){ myId = null; }
+  document.getElementById('whoLabel').textContent = myId ? 'Vous' : 'Invité·e';
+
+  db.collection('announcements').orderBy('createdAt','desc').limit(200).onSnapshot(
+    snap => { announcements = snap.docs.map(d => ({id:d.id, ...d.data})); renderAnnouncements(); renderDashboard(); renderNav(); },
+    () => showToast("Connexion au tableau interrompue.", 'error')
+  );
+
+  db.collection('incidents').orderBy('createdAt','desc').limit(200).onSnapshot(
+    snap => { incidents = snap.docs.map(d => ({id:d.id, ...d.data})); renderIncidents(); renderDashboard(); renderNav(); },
+    () => showToast("Connexion aux incidents interrompue.", 'error')
+  );
+
+  db.collection('todos').orderBy('createdAt','desc').limit(300).onSnapshot(
+    snap => { todos = snap.docs.map(d => ({id:d.id, ...d.data})); renderTodos(); renderDashboard(); renderNav(); },
+    () => showToast("Connexion à la liste interrompue.", 'error')
+  );
+
+  db.collection('journal').orderBy('createdAt','desc').limit(300).onSnapshot(
+    snap => { journal = snap.docs.map(d => ({id:d.id, ...d.data})); renderHistorique(); },
+    () => showToast("Connexion à l'historique interrompue.", 'error')
+  );
+
+  db.doc('config/main').onSnapshot(
+    snap => {
+      if(snap.exists){ configState = {...configState, ...snap.data}; }
+      renderConfig();
+    },
+    () => {}
+  );
+}
+
+boot();
+</script>
+  <script src="https://p.trellocdn.com/embed.min.js"></script>
+
+<script>
+/* ===== AZURALYS — Trello intégré par onglet =====
+   Une liste Trello = un onglet (Annonces / Incidents / À faire / Annuaire).
+   Chaque onglet affiche ses propres fiches et permet d'en ajouter une,
+   sans passer par un onglet Trello séparé. La liaison onglet→liste est
+   enregistrée dans config/main (partagée), les fiches elles-mêmes
+   vivent sur Trello (via le relais Vercel), pas dans la base "db". */
+(function(){
+  const TABS_TRELLO = ['annonces','incidents','todo','annuaire'];
+
+  let listsCache = null;    // [{id,name}] — toutes les listes du tableau
+  let listsPromise = null;
+  const cardsByTab = {annonces:[], incidents:[], todo:[], annuaire:[]};
+
+  function listIdFor(tab){
+    const cfg = (typeof configState !== 'undefined' && configState.trello) || {};
+    return (cfg.listIds || {})[tab] || '';
+  }
+
+  function ensureLists(){
+    if(listsCache) return Promise.resolve(listsCache);
+    if(listsPromise) return listsPromise;
+    listsPromise = trelloRequest('get_lists', {boardId: TRELLO_CONFIG.boardId})
+      .then(lists => { listsCache = lists || []; listsPromise = null; return listsCache; })
+      .catch(() => { listsCache = []; listsPromise = null; return listsCache; });
+    return listsPromise;
+  }
+
+  async function loadCards(tab){
+    const listId = listIdFor(tab);
+    if(!listId){ cardsByTab[tab] = []; return; }
+    try{ cardsByTab[tab] = await trelloRequest('get_cards', {listId}); }
+    catch(e){ cardsByTab[tab] = null; } // null = erreur, distinct de [] = liste vide
+  }
+
+  function render(tab){
+    const box = document.getElementById('trello-mini-' + tab);
+    if(!box) return;
+    const listId = listIdFor(tab);
+
+    if(!listId){
+      box.innerHTML = `
+        <div class="trello-card">
+          <div class="trello-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 7h4v6H7zM13 7h4v10h-4z"/></svg>
+            <div><h3>Trello</h3><p>Reliez cet onglet à une liste du tableau Azuralys pour ajouter et voir ses fiches ici.</p></div>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <div style="flex:1;">
+              <select class="trello-picker" data-tab="${tab}">
+                <option value="">${listsCache ? 'Choisir une liste…' : 'Chargement des listes…'}</option>
+                ${(listsCache||[]).map(l => `<option value="${escapeHtml(l.id)}">${escapeHtml(l.name)}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+        </div>`;
+      const picker = box.querySelector('.trello-picker');
+      if(picker) picker.onchange = () => linkList(tab, picker.value);
+      return;
+    }
+
+    const list = (listsCache||[]).find(l => l.id === listId);
+    const cards = cardsByTab[tab];
+
+    box.innerHTML = `
+      <div class="trello-card">
+        <div class="trello-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 7h4v6H7zM13 7h4v10h-4z"/></svg>
+          <div><h3>Trello${list ? ' — ' + escapeHtml(list.name) : ''}</h3><p>Fiches créées directement sur le tableau partagé Azuralys.</p></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="text" id="trello-add-title-${tab}" placeholder="Titre de la fiche…" style="flex:1;">
+          <button class="btn small" data-add="${tab}">Ajouter une fiche</button>
+        </div>
+        <div class="list" style="margin-top:8px;">
+          ${cards === null
+            ? `<div class="empty"><strong>Fiches indisponibles</strong>Le relais Trello ne répond pas pour l'instant.</div>`
+            : cards.length
+              ? cards.map(c => `
+                <div class="row-item">
+                  <div style="flex:1;min-width:0;">
+                    <p class="item-title">${escapeHtml(c.name)}</p>
+                    ${c.desc ? `<p class="item-body">${escapeHtml(c.desc)}</p>` : ''}
+                  </div>
+                  <div class="row-actions">
+                    <a class="btn small ghost" href="${escapeHtml(c.shortUrl || c.url || ('https://trello.com/c/' + c.id))}" target="_blank" rel="noopener">Ouvrir</a>
+                  </div>
+                </div>`).join('')
+              : `<div class="empty"><strong>Aucune fiche</strong>Ajoutez la première fiche de cette liste ci-dessus.</div>`
+          }
+        </div>
+        <div class="trello-actions">
+          <button class="btn ghost small" data-refresh="${tab}">Actualiser</button>
+          <a class="btn ghost small" href="https://trello.com/b/${escapeHtml(TRELLO_CONFIG.boardId)}" target="_blank" rel="noopener">Ouvrir le tableau ↗</a>
+          <button class="btn ghost small" data-relink="${tab}" style="margin-left:auto;">Changer de liste</button>
+        </div>
+      </div>`;
+
+    const addBtn = box.querySelector(`[data-add="${tab}"]`);
+    const addInput = box.querySelector(`#trello-add-title-${tab}`);
+    if(addBtn) addBtn.onclick = () => addCard(tab);
+    if(addInput) addInput.addEventListener('keydown', e => { if(e.key === 'Enter') addCard(tab); });
+    const refreshBtn = box.querySelector(`[data-refresh="${tab}"]`);
+    if(refreshBtn) refreshBtn.onclick = async () => { await loadCards(tab); render(tab); };
+    const relinkBtn = box.querySelector(`[data-relink="${tab}"]`);
+    if(relinkBtn) relinkBtn.onclick = () => linkList(tab, '');
+  }
+
+  async function linkList(tab, listId){
+    if(typeof db === 'undefined' || !db || typeof saveConfigFields !== 'function'){
+      if(typeof showToast === 'function') showToast("Connexion indisponible pour l'instant.", 'error');
+      return;
+    }
+    try{
+      await saveConfigFields({trello: {listIds: {[tab]: listId}}});
+      if(listId) await loadCards(tab);
+      render(tab);
+    }catch(e){
+      if(typeof showToast === 'function') showToast('Liaison à Trello impossible.', 'error');
+    }
+  }
+
+  async function addCard(tab){
+    const input = document.getElementById('trello-add-title-' + tab);
+    if(!input) return;
+    const name = input.value.trim();
+    if(!name){ if(typeof showToast === 'function') showToast('Ajoutez un titre.', 'error'); return; }
+    const listId = listIdFor(tab);
+    if(!listId) return;
+    try{
+      await trelloRequest('create_card', {idList: listId, name});
+      input.value = '';
+      if(typeof showToast === 'function') showToast('Fiche ajoutée à Trello.', 'success');
+      await loadCards(tab);
+      render(tab);
+    }catch(e){
+      if(typeof showToast === 'function') showToast('Ajout à Trello impossible.', 'error');
+    }
+  }
+
+  async function initAll(){
+    TABS_TRELLO.forEach(render); // squelette immédiat
+    await ensureLists();
+    await Promise.all(TABS_TRELLO.filter(listIdFor).map(loadCards));
+    TABS_TRELLO.forEach(render);
+  }
+
+  window.AzuralysTrelloMini = { onConfigReady: initAll };
+
+  initAll();
+})();
+</script>
+
+</body>
+</html>
