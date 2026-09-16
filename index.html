@@ -1499,7 +1499,7 @@ async function syncTodosToTrello(){
 }
 
 /* ---------------- annuaire / config ---------------- */
-let configState = {googleDocUrl:'', prefets:'', sentinelle:'', gardien:'', membres:[], membresUpdatedAt:0, trello:{boardUrl:'', listId:'', proxyUrl:'/api/trello', syncMode:'manual'}};
+let configState = {googleDocUrl:'', prefets:'', sentinelle:'', gardien:'', membres:[], membresUpdatedAt:0, trello:{boardUrl:'', listId:'', proxyUrl:'https://azuralys-trello-api.vercel.app/', syncMode:'manual'}};
 let rosterEditing = {prefets:false, sentinelle:false, gardien:false};
 
 function renderConfig(){
